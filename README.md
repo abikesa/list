@@ -1,3 +1,4 @@
+```sh
 links/
 ├── data/
 │   └── tasks.csv              # Simple CSV you update
