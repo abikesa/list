@@ -3,13 +3,24 @@ fetch('data/tasks.csv')
   .then(text => {
     const rows = text.trim().split('\n').slice(1);
     const tbody = document.querySelector('#task-table tbody');
+    const now = new Date();
+
     rows.forEach(row => {
       const [task, created, due, done] = row.split(',');
-      const now = new Date();
       const dueDate = new Date(due);
-      const diffMs = dueDate - now;
-      const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-      const deltaText = days > 0 ? `in ${days}d` : `${-days}d ago`;
+      let deltaText = '';
+      let deltaClass = '';
+
+      if (!isNaN(dueDate)) {
+        const diffMs = dueDate - now;
+        const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        deltaText = days > 0 ? `in ${days}d` : `${-days}d ago`;
+        deltaClass = done === 'true' ? 'done' : (days < 0 ? 'overdue' : 'upcoming');
+      } else {
+        deltaText = 'TBD';
+        deltaClass = 'upcoming';
+      }
+
       const rowEl = document.createElement('tr');
       const status = done === 'true' ? '✔' : '';
       rowEl.innerHTML = `
@@ -17,7 +28,7 @@ fetch('data/tasks.csv')
         <td>${task}</td>
         <td>${created}</td>
         <td>${due}</td>
-        <td class="${done === 'true' ? 'done' : days < 0 ? 'overdue' : 'upcoming'}">${deltaText}</td>
+        <td class="${deltaClass}">${deltaText}</td>
       `;
       tbody.appendChild(rowEl);
     });
