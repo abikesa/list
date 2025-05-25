@@ -9,7 +9,7 @@ fetch('data/tasks.csv')
       const [task, created, due, done] = row.split(',');
       const dueDate = new Date(due);
       let deltaText = '';
-      let deltaClass = '';
+      let deltaClass = '';   
 
       if (!isNaN(dueDate)) {
         const diffMs = dueDate - now;
